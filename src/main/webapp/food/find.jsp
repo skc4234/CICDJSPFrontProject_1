@@ -41,13 +41,25 @@ function commons(page) {
 		data:{"ss":ss,"column":column,"type":types,"page":page},
 		traditional:true,
 		success:function(result){
+			// result: 문자열로 전송 => JSON으로 변경 => JSON.parse(result)
 			let json=JSON.parse(result)
 			console.log(json)
-			$('#ss').val(json[0].ss)
+			$('#ss').val(json[0].ss) // <input>에 값 채우기
 			jsonView(json)
 		}
 	})
 }
+/*
+ *    1. val() : <select>,<input>,<textarea> 등 => value()
+ 	  2. text() : <td></td>, <span></span> 등 태그 사이의 값 => textContent()
+ 	  3. html() : innerHTML()
+ 	  4. attr() : 속성 값 읽기/변경 => attr('src')
+ 	  ----------------------> 한번 수행(갱신)
+ 	  1. append(): 연속적으로 추가
+ 	  2. prepend(): 앞에 추가
+
+*/
+
 function jsonView(json) {
 	let html=''
 	json.forEach((food)=>{
@@ -66,6 +78,8 @@ $(function(){
 	commons(1)
 	$('.btns').on('click',function(){
 		let types=[]
+		// 체크박스 처리 => $('input[name=type]:checked')
+		// 상태 선택자
 		let count=$('input[name=type]:checked').length
 		if(count===0) {
 			alert("체크박스에 체크 하세요")
@@ -76,11 +90,15 @@ $(function(){
 		})
 		
 		let ss=$('#ss').val()
+		// trim() => 공백 제거
 		if(ss.trim()==="") {
 			$('#ss').focus()
 			return
 		}
 		let column=$('#column').val()
+		// 배열 전송 시 => traditional:true
+		// 멀티 파일 업로드
+		// Ajax => 화면 변경이 없기 때문에 입력된 데이터를 그대로 가지고 있다
 		$.ajax({
 			type:'post',
 			url:'../food/find_ajax.do',
