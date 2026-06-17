@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.dao.food-mapper">
+<select id="foodFindData" resultType="FoodVO" parameterType="hashmap">
+	SELECT no,name,poster,address,type
+	FROM food
+	WHERE ${column} LIKE '%'||#{ss}||'%'
+	<!-- 
+		prefix: 앞에 추가
+		suffix: 뒤에 추가
+		prefixOverrides: 앞에 삭제
+		suffixOverrides: 뒤에 삭제
+	 -->
+	 <!--
+	 	<input type="checkbox" value="A" name="">한식
+	 	{"A","B"}
+	  -->
+	<trim prefix="AND (" suffix=")" prefixOverrides="AND|OR"> <!-- 맨 앞에 OR 지우기 -->
+	  <if test="fdArr!=null">
+		<foreach collection="fdArr" item="fd">
+			<trim prefix="OR"> <!-- OR (type LIKE '%한식%') OR (type LIKE '%양식%') -->
+				<choose>
+					<when test="fd=='A'.toString()">
+						type LIKE '%한식%'
+					</when>
+					<when test="fd=='B'.toString()">
+						type LIKE '%양식%'
+					</when>
+					<when test="fd=='C'.toString()">
+						type LIKE '%일식%'
+					</when>
+					<when test="fd=='D'.toString()">
+						type LIKE '%중식%'
+					</when>
+					<when test="fd=='E'.toString()">
+						type LIKE '%분식%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</if>
+	</trim>
+	ORDER BY no ASC
+	OFFSET #{start} ROWS FETCH NEXT 12 ROWS ONLY
+</select>
+<select id="foodFindCount" resultType="int" parameterType="hashmap">
+	SELECT COUNT(*)
+	FROM food
+	WHERE ${column} LIKE '%'||#{ss}||'%'
+	<trim prefix="AND (" suffix=")" prefixOverrides="AND|OR"> <!-- 맨 앞에 OR 지우기 -->
+	
+	<if test="fdArr!=null">
+		<foreach collection="fdArr" item="fd">
+			<trim prefix="OR"> <!-- OR (type LIKE '%한식%') OR (type LIKE '%양식%') -->
+				<choose>
+					<when test="fd=='A'.toString()">
+						type LIKE '%한식%'
+					</when>
+					<when test="fd=='B'.toString()">
+						type LIKE '%양식%'
+					</when>
+					<when test="fd=='C'.toString()">
+						type LIKE '%일식%'
+					</when>
+					<when test="fd=='D'.toString()">
+						type LIKE '%중식%'
+					</when>
+					<when test="fd=='E'.toString()">
+						type LIKE '%분식%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+		
+	</if>
+	</trim>
+</select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-config.dtd">
+ <!-- .dtd : XML 정의 파일
+ 		솔루션 : Spring=>XML, SpringBoot=>yml/properties
+ 		- yml : 들여쓰기 지켜야함 => CI/CD에서도 사용
+  -->
+<configuration>
+	<!-- 1. VO 등록 -->
+	<typeAliases>
+		<typeAlias type="com.sist.vo.FoodVO" alias="FoodVO"/>
+	</typeAliases>
+	
+	<!-- 2. 오라클 환경 설정 : DBCP 등록(Connection) -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+				<property name="url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+				<property name="username" value="hr"/>
+				<property name="password" value="happy"/>
+				<!--
+					type: 클래스명 찾기 => PooledDataSource
+					property: PooledDataSource가 가지고 있는 변수명
+					public class PooledDataSource {
+						private String driver,url,username,password;
+						public void setDriver, setUrl, setUsername, setPassword
+						==> DI(의존성 주입)
+					}
+					
+					ConnectionPool
+					- maxActive: 8
+					- maxIdle: 8
+					- maxWait: 10000
+				 -->
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<!-- 3. mapper 등록(PreparedStatement, ResultSet) : 등록 없으면 SQL문장 실행 불가 -->
+	<mappers>
+		<mapper resource="com/sist/dao/food-mapper.xml"/>
+	</mappers>
+	<!-- Annotaion으로 변경 => Spring -->
+</configuration>
